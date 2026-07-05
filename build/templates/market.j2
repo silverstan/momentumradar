@@ -1,0 +1,93 @@
+{% extends "base.j2" %}
+{% import "_macros.j2" as mm with context %}
+{% block title %}{{ m.short }} — Top 10 Momentum Stocks Today | {{ m.index_name }} | MomentumRadar{% endblock %}
+{% block desc %}Today's 10 strongest momentum stocks in {{ m.name }} ({{ m.index_name }}), ranked by our transparent 0–100 Momentum Score with 1D/1W/1M/3M/1Y performance, 90-day momentum history and links to each company's financial reports. Updated every trading day.{% endblock %}
+{% block head %}
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"{{ site.base_url }}/"},{"@type":"ListItem","position":2,"name":"Markets","item":"{{ site.base_url }}/#markets"},{"@type":"ListItem","position":3,"name":"{{ m.short }}","item":"{{ canonical }}"}]}</script>
+{% if blk %}<script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"{{ m.name }} top-10 momentum stocks","description":"Daily momentum ranking of liquid large-cap stocks in {{ m.name }} by MomentumRadar.","dateModified":"{{ data.date }}","creator":{"@type":"Organization","name":"MomentumRadar"},"license":"{{ site.base_url }}/terms/"}</script>{% endif %}
+{% endblock %}
+{% block content %}
+
+<section class="wrap mhead">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> › <a href="/#markets">Markets</a> › <span>{{ m.short }}</span></nav>
+  <h1>{{ mm.flag(m.flag, m.name) }} {{ m.name }} — Top 10 momentum stocks</h1>
+  <p class="lede">{{ m.tagline }}.</p>
+  <ul class="mmeta" role="list">
+    <li>📍 {{ m.city }}</li><li>💱 {{ m.currency }}</li><li>⏰ {{ m.hours }}</li><li>📊 {{ m.exchanges }}</li>
+    {% if blk and blk.index %}<li>📈 {{ m.index_name }}: <strong>{{ '{:,.2f}'.format(blk.index.level) }}</strong> <span class="pct {{ 'up' if blk.index.d1 >= 0 else 'down' }}">{{ '▲' if blk.index.d1 >= 0 else '▼' }} {{ '%+.2f'|format(blk.index.d1) }}% today</span></li>{% endif %}
+  </ul>
+  {% if blk and blk.stale %}<p class="stale big">⏳ Live refresh failed for this market — showing last good data from {{ blk.stale_since }}. It will retry automatically on the next scheduled update.</p>{% endif %}
+</section>
+
+{% if blk %}
+{% set top = blk.stocks[0] %}
+<section class="wrap" aria-labelledby="top-h">
+  <h2 id="top-h">🏆 Today's top pick — what the data says</h2>
+  <article class="toppick">
+    <div class="stock-head">
+      <span class="rank">#1</span>
+      <div class="stock-id">
+        <h3>{{ top.name }} <span class="tag-top">TOP PICK</span></h3>
+        <p class="tick">{{ top.ticker }} · {{ m.exchanges }} · {{ top.price_fmt }}</p>
+      </div>
+      {{ mm.score_badge(top.score, top.score_lbl) }}
+    </div>
+    {{ mm.returns_row(top.returns) }}
+    <div class="tp-analysis">
+      <h4>Why it ranks #1 today <span class="auto-tag" title="Generated automatically from the latest price data on every update — it can never go stale.">auto-generated from live data</span></h4>
+      {% for para in top.analysis.paragraphs %}<p>{{ para }}</p>{% endfor %}
+    </div>
+    <div class="tp-facts">
+      <h4>📌 The numbers behind it</h4>
+      <ul role="list">
+        {% for f in top.analysis.facts %}
+        <li><span>{{ f.label }}</span><strong class="{{ 'up' if f.up else ('down' if f.up == false else '') }}">{{ f.value }}</strong></li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="tp-hist">
+      <h4>📈 90-day Momentum Score history</h4>
+      <p class="sub">Is strength building or fading? This is the score itself, recalculated for each of the last 90 trading days.</p>
+      {{ mm.spark(top.spark_score_d, 'sp-score big', 640, 120, top.name + ' 90 day momentum score history') }}
+      <p class="hist-ends"><span>90 days ago: <strong>{{ top.score_hist[0] }}</strong></span><span>today: <strong>{{ top.score }}</strong></span></p>
+    </div>
+    <div class="stock-links">
+      <a href="{{ top.links.quote }}" rel="noopener nofollow" target="_blank">Live quote ↗</a>
+      <a href="{{ top.links.financials }}" rel="noopener nofollow" target="_blank">Financial statements ↗</a>
+      <a href="{{ top.links.history }}" rel="noopener nofollow" target="_blank">Full price history ↗</a>
+      <a href="{{ top.links.profile }}" rel="noopener nofollow" target="_blank">Company profile ↗</a>
+    </div>
+  </article>
+</section>
+
+{{ mm.adslot('3333333333') }}
+
+<section class="wrap" aria-labelledby="all-h">
+  <h2 id="all-h">All top 10 — ranked by Momentum Score</h2>
+  <p class="sub">Scored from {{ blk.universe_n }} of the most liquid large-caps in {{ m.name }} · data as of {{ data.generated_utc }}.</p>
+  <div class="stocklist">
+    {% for s in blk.stocks %}{{ mm.stock_card(s, m) }}{% endfor %}
+  </div>
+</section>
+
+{% else %}
+<section class="wrap"><p class="stale big">Data for this market is temporarily unavailable. It will appear automatically once the daily pipeline can reach the data source — usually the next scheduled run.</p></section>
+{% endif %}
+
+<section class="wrap mabout">
+  <h2>About the {{ m.name }} market</h2>
+  <p>{{ m.description }}</p>
+  <p class="callout">📌 <strong>Beginner's note:</strong> a high Momentum Score means a stock <em>has been</em> rising strongly — it is not a prediction and not a recommendation. Markets reverse quickly. Read the <a href="/learn/">Beginner's Guide</a>, check the company's <em>financial history</em> links above, and consult a licensed adviser before investing.</p>
+</section>
+
+<section class="wrap othermkts">
+  <h2>Explore other markets</h2>
+  <div class="chiprow">
+    {% for mk in markets_cfg if mk.id != m.id %}
+    <a class="chip" href="/markets/{{ mk.id }}/">{{ mm.flag(mk.flag, mk.name) }} {{ mk.short }}</a>
+    {% endfor %}
+  </div>
+</section>
+
+{{ mm.adslot('4444444444') }}
+{% endblock %}

@@ -1,0 +1,7 @@
+{
+  "about":     {"title":"About & Methodology","desc":"What MomentumRadar is, who it's for, and the full open methodology behind the 0–100 Momentum Score — data sources, weights, formula and update schedule."},
+  "contact":   {"title":"Contact Us","desc":"Get in touch with MomentumRadar — feedback, data corrections, market coverage requests and partnership enquiries."},
+  "privacy":   {"title":"Privacy Policy","desc":"How MomentumRadar handles data, cookies and third-party advertising (Google AdSense), and your rights."},
+  "terms":     {"title":"Terms of Use","desc":"The terms governing use of MomentumRadar's free market data and educational content."},
+  "disclaimer":{"title":"Financial Disclaimer","desc":"MomentumRadar provides educational market information only — not financial advice. Read the full disclaimer."}
+}

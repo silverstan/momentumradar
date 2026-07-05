@@ -1,0 +1,17 @@
+[
+  {"slug":"what-is-momentum-investing","category":"Core concepts","minutes":6,
+   "title":"What Is Momentum Investing? A Beginner's Complete Guide",
+   "summary":"Momentum investing is one of the most researched strategies in finance. Here's what it is, why it has worked historically, and what its real risks are — in plain English."},
+  {"slug":"how-to-read-stock-performance-data","category":"How to use MomentumRadar","minutes":5,
+   "title":"How to Read Stock Performance Data: 1D, 1W, 1M, 3M and 1Y Explained",
+   "summary":"Every stock on MomentumRadar shows five performance figures. Here's exactly what each one means, how they interact, and the patterns worth noticing."},
+  {"slug":"momentum-score-explained","category":"How to use MomentumRadar","minutes":4,
+   "title":"The Momentum Score Explained: How We Calculate 0–100",
+   "summary":"The exact formula behind our 0–100 Momentum Score — the weights, the maths, a worked example, and what the score can and cannot tell you."},
+  {"slug":"global-stock-markets-explained","category":"Market education","minutes":7,
+   "title":"Global Stock Markets Explained: A Beginner's World Tour",
+   "summary":"A plain-English guide to the 13 markets MomentumRadar tracks — from Wall Street to Bursa Malaysia — and what makes each one behave differently."},
+  {"slug":"risk-management-101","category":"Investing fundamentals","minutes":6,
+   "title":"Risk Management 101: How to Protect Your Investment Capital",
+   "summary":"The best investors obsess about not losing money. Position sizing, diversification, stop-losses and the psychology of drawdowns — a practical primer."}
+]

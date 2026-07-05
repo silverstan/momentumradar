@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+{% import "_macros.j2" as mm with context %}
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ site.site_name }} — {{ site.tagline }}{% endblock %}</title>
+<meta name="description" content="{% block desc %}{{ site.description }}{% endblock %}">
+<link rel="canonical" href="{{ canonical }}">
+<meta property="og:site_name" content="{{ site.site_name }}">
+<meta property="og:type" content="{% block ogtype %}website{% endblock %}">
+<meta property="og:title" content="{{ self.title() }}">
+<meta property="og:description" content="{{ self.desc() }}">
+<meta property="og:url" content="{{ canonical }}">
+<meta property="og:image" content="{{ site.base_url }}/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+{% if site.adsense_client %}<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ site.adsense_client }}" crossorigin="anonymous"></script>{% endif %}
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"{{ site.site_name }}","url":"{{ site.base_url }}/","description":"{{ site.description }}"}</script>
+{% block head %}{% endblock %}
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="hdr">
+  <nav class="nav wrap" aria-label="Main">
+    <a class="logo" href="/"><span class="logo-dot" aria-hidden="true"></span>Momentum<span>Radar</span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="menu" aria-label="Menu"><span></span><span></span><span></span></button>
+    <ul id="menu" class="menu">
+      <li class="has-sub">
+        <button class="sub-toggle" aria-expanded="false">Markets ▾</button>
+        <ul class="sub">
+          {% for mk in markets_cfg %}
+          <li><a href="/markets/{{ mk.id }}/">{{ mm.flag(mk.flag, mk.name) }} {{ mk.short }}</a></li>
+          {% endfor %}
+        </ul>
+      </li>
+      <li><a href="/learn/">Learn</a></li>
+      <li><a href="/glossary/">Glossary</a></li>
+      <li><a href="/faq/">FAQ</a></li>
+      <li><a href="/about/">About</a></li>
+      <li><a class="btn-contact" href="/contact/">Contact</a></li>
+    </ul>
+    <span class="updated" title="Data refreshed automatically every trading day">{{ data.generated_utc if data else '' }}</span>
+  </nav>
+</header>
+
+{% if data and data.is_seed %}
+<div class="seedbar wrap" role="status">⚠️ Preview build with sample data — real market data loads automatically on the first scheduled refresh.</div>
+{% endif %}
+
+<main id="main">
+{% block content %}{% endblock %}
+</main>
+
+<footer class="ftr">
+  <div class="wrap ftr-grid">
+    <div>
+      <a class="logo" href="/"><span class="logo-dot" aria-hidden="true"></span>Momentum<span>Radar</span></a>
+      <p>Free global stock momentum tracking for everyday investors. {{ markets_cfg|length }} markets across the US, Europe, Asia-Pacific and ASEAN, refreshed every trading day.</p>
+      <p class="dim">Data: Yahoo Finance public API · Updated {{ data.generated_utc if data else 'daily' }}</p>
+    </div>
+    <nav aria-label="Markets"><h4>Markets</h4><ul>
+      {% for mk in markets_cfg[:7] %}<li><a href="/markets/{{ mk.id }}/">{{ mk.short }}</a></li>{% endfor %}
+    </ul></nav>
+    <nav aria-label="More markets"><h4>ASEAN &amp; Asia</h4><ul>
+      {% for mk in markets_cfg[7:] %}<li><a href="/markets/{{ mk.id }}/">{{ mk.short }}</a></li>{% endfor %}
+    </ul></nav>
+    <nav aria-label="Company"><h4>Site</h4><ul>
+      <li><a href="/learn/">Beginner's Guide</a></li>
+      <li><a href="/glossary/">Glossary</a></li>
+      <li><a href="/faq/">FAQ</a></li>
+      <li><a href="/about/">About &amp; Methodology</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="/privacy/">Privacy Policy</a></li>
+      <li><a href="/terms/">Terms of Use</a></li>
+      <li><a href="/disclaimer/">Disclaimer</a></li>
+    </ul></nav>
+  </div>
+  <div class="wrap legal">
+    <p><strong>⚠️ Important:</strong> MomentumRadar provides publicly available market data and educational analysis only. Nothing on this website is financial, investment, tax or legal advice, or a recommendation to buy or sell any security. Past performance is not indicative of future results; investing involves risk of loss. Always do your own research and consult a licensed financial adviser. MomentumRadar is not a registered financial adviser in any jurisdiction.</p>
+    <p>© {{ site.copyright_from }}–{{ now_year }} MomentumRadar.net · All rights reserved. · <a href="/sitemap.xml">Sitemap</a></p>
+  </div>
+</footer>
+<script src="/app.js" defer></script>
+</body>
+</html>

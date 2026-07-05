@@ -1,0 +1,60 @@
+{% macro pct(v) -%}
+{%- if v is none -%}<span class="pct na">—</span>
+{%- else -%}<span class="pct {{ 'up' if v >= 0 else 'down' }}">{{ '▲' if v >= 0 else '▼' }} {{ '%+.1f'|format(v) }}%</span>
+{%- endif -%}
+{%- endmacro %}
+
+{% macro score_badge(score, lbl) -%}
+<div class="score s-{{ lbl|lower|replace(' ','') }}" role="img" aria-label="Momentum score {{ score }} out of 100, {{ lbl }}">
+  <span class="score-n">{{ score }}</span><span class="score-d">/100</span>
+  <span class="score-l">{{ lbl }}</span>
+</div>
+{%- endmacro %}
+
+{% macro spark(d, cls, w=120, h=36, label='chart') -%}
+{% if d %}<svg class="spark {{ cls }}" viewBox="0 0 {{ w }} {{ h }}" width="{{ w }}" height="{{ h }}" role="img" aria-label="{{ label }}" preserveAspectRatio="none"><path d="{{ d }}" fill="none" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>{% endif %}
+{%- endmacro %}
+
+{% macro returns_row(r) -%}
+<div class="tf-grid">
+  {% for tf in ['d1','w1','m1','q1','y1'] %}
+  <div class="tf-cell"><span class="tf-k">{{ tf_label[tf] }}</span>{{ pct(r[tf]) }}</div>
+  {% endfor %}
+</div>
+{%- endmacro %}
+
+{% macro flag(code, name) -%}
+<img class="flag" src="https://flagcdn.com/40x30/{{ code }}.png" srcset="https://flagcdn.com/80x60/{{ code }}.png 2x" width="20" height="15" alt="{{ name }} flag" loading="lazy">
+{%- endmacro %}
+
+{% macro stock_card(s, m, rank_medal=true) -%}
+<article class="stock {{ 'stock-first' if s.rank == 1 }}" id="{{ s.ticker|replace('.','-') }}">
+  <div class="stock-head">
+    <span class="rank">{% if rank_medal and s.rank <= 3 %}{{ ['🥇','🥈','🥉'][s.rank-1] }}{% else %}#{{ s.rank }}{% endif %}</span>
+    <div class="stock-id">
+      <h3>{{ s.name }} {% if s.rank == 1 %}<span class="tag-top">TOP PICK</span>{% endif %}</h3>
+      <p class="tick">{{ s.ticker }} · {{ m.exchanges }} · {{ s.price_fmt }}</p>
+    </div>
+    {{ score_badge(s.score, s.score_lbl) }}
+  </div>
+  {{ returns_row(s.returns) }}
+  <div class="spark-row">
+    <div><span class="spark-k">Price · 30 days</span>{{ spark(s.spark_price_d, 'sp-price', label=s.name + ' 30 day price trend') }}</div>
+    <div><span class="spark-k">Momentum Score · 90 days</span>{{ spark(s.spark_score_d, 'sp-score', label=s.name + ' 90 day momentum score history') }}</div>
+  </div>
+  <div class="stock-links">
+    <a href="{{ s.links.quote }}" rel="noopener nofollow" target="_blank">Quote ↗</a>
+    <a href="{{ s.links.financials }}" rel="noopener nofollow" target="_blank">Financial history ↗</a>
+    <a href="{{ s.links.history }}" rel="noopener nofollow" target="_blank">Price history ↗</a>
+  </div>
+</article>
+{%- endmacro %}
+
+{% macro adslot(n) -%}
+{% if site.adsense_client %}
+<div class="adwrap"><span class="adlabel">Advertisement</span>
+<ins class="adsbygoogle" style="display:block" data-ad-client="{{ site.adsense_client }}" data-ad-slot="{{ n }}" data-ad-format="auto" data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+{% endif %}
+{%- endmacro %}

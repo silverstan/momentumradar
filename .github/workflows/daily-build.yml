@@ -1,0 +1,59 @@
+name: Daily data refresh & deploy
+
+on:
+  schedule:
+    # 22:30 UTC Mon–Fri = after the US close year-round; Asian & European
+    # markets closed hours earlier, so every market gets same-day closes.
+    - cron: "30 22 * * 1-5"
+  workflow_dispatch: {}   # manual "Run workflow" button
+  push:
+    branches: [main]      # also rebuild whenever you edit code/content
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Fetch market data & build site
+        run: python build/build.py
+
+      - name: Commit refreshed data snapshot
+        run: |
+          git config user.name "momentum-bot"
+          git config user.email "actions@github.com"
+          git add data/latest.json || true
+          git commit -m "data: daily refresh $(date -u +%F)" || echo "no changes"
+          git push || true
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

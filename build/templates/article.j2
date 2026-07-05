@@ -1,0 +1,21 @@
+{% extends "base.j2" %}
+{% block title %}{{ a.title }} | MomentumRadar Learn{% endblock %}
+{% block desc %}{{ a.summary }}{% endblock %}
+{% block ogtype %}article{% endblock %}
+{% block head %}
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":{{ a.title|tojson }},"description":{{ a.summary|tojson }},"author":{"@type":"Organization","name":"MomentumRadar"},"publisher":{"@type":"Organization","name":"MomentumRadar"},"dateModified":"{{ data.date }}","mainEntityOfPage":"{{ canonical }}"}</script>
+{% endblock %}
+{% block content %}
+<article class="wrap prose">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> › <a href="/learn/">Learn</a> › <span>{{ a.title }}</span></nav>
+  <span class="acat">{{ a.category }}</span>
+  <h1>{{ a.title }}</h1>
+  <p class="amin">⏱ {{ a.minutes }} min read · Educational content, not financial advice</p>
+  {{ a.body|safe }}
+  <div class="callout">⚠️ <strong>Not financial advice.</strong> This article is educational. Markets involve risk of loss — always do your own research or consult a licensed financial adviser. See our <a href="/disclaimer/">full disclaimer</a>.</div>
+  <h2>Keep learning</h2>
+  <div class="chiprow">
+    {% for other in articles if other.slug != a.slug %}<a class="chip" href="/learn/{{ other.slug }}/">{{ other.title }}</a>{% endfor %}
+  </div>
+</article>
+{% endblock %}

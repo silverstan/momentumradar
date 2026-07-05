@@ -1,0 +1,19 @@
+{% extends "base.j2" %}
+{% block title %}Investor's Glossary — {{ glossary|length }} Essential Terms in Plain English | MomentumRadar{% endblock %}
+{% block desc %}{{ glossary|length }} essential investing terms every beginner should know — momentum, P/E ratio, dividends, stop-loss, volatility and more, all explained in plain English.{% endblock %}
+{% block content %}
+<section class="wrap mhead">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> › <span>Glossary</span></nav>
+  <h1>📖 Investor's Glossary</h1>
+  <p class="lede">{{ glossary|length }} essential terms, plain English, no jargon.</p>
+</section>
+<section class="wrap">
+  <div class="gloss">
+    {% for g in glossary %}
+    <div class="gterm" id="{{ g.term|lower|replace(' ','-')|replace('(','')|replace(')','')|replace('/','-') }}">
+      <h3>{{ g.term }}</h3><p>{{ g.def }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

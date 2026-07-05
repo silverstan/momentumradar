@@ -1,0 +1,9 @@
+{% extends "base.j2" %}
+{% block title %}{{ meta.title }} | MomentumRadar{% endblock %}
+{% block desc %}{{ meta.desc }}{% endblock %}
+{% block content %}
+<article class="wrap prose">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> › <span>{{ meta.title }}</span></nav>
+  {{ body|safe }}
+</article>
+{% endblock %}

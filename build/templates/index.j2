@@ -1,0 +1,106 @@
+{% extends "base.j2" %}
+{% import "_macros.j2" as mm with context %}
+{% block title %}MomentumRadar — Global Stock Momentum Tracker for Beginners | {{ markets_cfg|length }} Markets, Updated Daily{% endblock %}
+{% block desc %}Track the strongest momentum stocks across {{ markets_cfg|length }} global markets — US, Europe, Asia-Pacific and ASEAN. Real data, transparent 0–100 Momentum Score, 90-day momentum history. Free, beginner-friendly, updated every trading day.{% endblock %}
+{% block head %}
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{% for q in faq[:6] %}{"@type":"Question","name":{{ q.q|tojson }},"acceptedAnswer":{"@type":"Answer","text":{{ q.a|striptags|tojson }}}}{{ "," if not loop.last }}{% endfor %}]}</script>
+{% endblock %}
+{% block content %}
+
+<section class="hero wrap">
+  <p class="kicker">🌍 {{ markets_cfg|length }} global markets · refreshed every trading day</p>
+  <h1>See which stocks are moving <em>strongest</em> — across the world, in plain English.</h1>
+  <p class="lede">MomentumRadar ranks the top 10 momentum stocks in each of {{ markets_cfg|length }} markets using real daily price data and a transparent 0–100 score. No account. No jargon. No paywall.</p>
+  <div class="hero-cta">
+    <a class="btn btn-p" href="#markets">📊 Explore markets</a>
+    <a class="btn btn-s" href="/learn/">📚 New? Start here</a>
+  </div>
+  <ul class="hero-stats" role="list">
+    <li><strong>{{ markets_cfg|length }}</strong> markets</li>
+    <li><strong>{% set n = namespace(t=0) %}{% for mk in markets_cfg %}{% set b = data.markets.get(mk.id) %}{% if b %}{% set n.t = n.t + b.universe_n %}{% endif %}{% endfor %}{{ n.t }}</strong> stocks scored daily</li>
+    <li><strong>5</strong> timeframes</li>
+    <li><strong>Free</strong> always</li>
+  </ul>
+</section>
+
+<section class="wrap" id="movers" aria-labelledby="movers-h">
+  <h2 id="movers-h">🏆 Strongest momentum on the planet right now</h2>
+  <p class="sub">The 10 highest Momentum Scores across every market we track — as of {{ data.generated_utc }}.</p>
+  <div class="movers">
+    {% for s in movers %}
+    <a class="mover" href="/markets/{{ s.market.id }}/#{{ s.ticker|replace('.','-') }}">
+      <span class="mover-rank">#{{ loop.index }}</span>
+      {{ mm.flag(s.market.flag, s.market.name) }}
+      <span class="mover-name">{{ s.name }}<em>{{ s.ticker }} · {{ s.market.short }}</em></span>
+      {{ mm.spark(s.spark_score_d, 'sp-score', 90, 28, s.name + ' momentum history') }}
+      <span class="mover-score s-{{ s.score_lbl|lower|replace(' ','') }}">{{ s.score }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+{{ mm.adslot('1111111111') }}
+
+<section class="wrap" id="markets" aria-labelledby="markets-h">
+  <h2 id="markets-h">📈 Markets dashboard</h2>
+  <p class="sub">Average Momentum Score of each market's top 10. Click a card for the full breakdown, top-pick analysis and momentum history.</p>
+  <div class="legend" aria-label="Score legend">
+    <span class="lg s-strong">80–100 Strong</span><span class="lg s-good">65–79 Good</span><span class="lg s-moderate">50–64 Moderate</span><span class="lg s-weak">35–49 Weak</span><span class="lg s-veryweak">0–34 Very weak</span>
+  </div>
+  <div class="mgrid">
+    {% for mk in markets_cfg %}
+    {% set blk = data.markets.get(mk.id) %}
+    <a class="mcard" href="/markets/{{ mk.id }}/">
+      <div class="mcard-top">{{ mm.flag(mk.flag, mk.name) }}<strong>{{ mk.short }}</strong>
+        {% if blk and blk.avg_score is not none %}<span class="mover-score s-{{ blk.avg_lbl|lower|replace(' ','') }}">{{ blk.avg_score }}</span>{% endif %}
+      </div>
+      <p class="mcard-idx">{{ mk.index_name }}
+        {% if blk and blk.index %} · {{ '%+.2f'|format(blk.index.d1) }}% today{% endif %}
+      </p>
+      {% if blk %}
+      <p class="mcard-lead">Leader: <strong>{{ blk.stocks[0].name }}</strong> ({{ blk.stocks[0].score }}/100)</p>
+      {% if blk.stale %}<p class="stale">⏳ showing {{ blk.stale_since }} data</p>{% endif %}
+      {% else %}<p class="mcard-lead dim">Data temporarily unavailable</p>{% endif %}
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="wrap howto" aria-labelledby="how-h">
+  <h2 id="how-h">🎓 How to use MomentumRadar — 4 steps</h2>
+  <ol class="steps">
+    <li><strong>Pick a market.</strong> From Wall Street to Bursa Malaysia — each page shows that market's 10 strongest stocks.</li>
+    <li><strong>Read the score.</strong> 0–100, from real price data. 80+ = strong momentum across several timeframes; below 40 = weakening. <a href="/about/#methodology">See exactly how it's calculated</a>.</li>
+    <li><strong>Check the history.</strong> Every stock shows a 90-day Momentum Score chart — so you can see whether strength is building or fading, not just today's snapshot.</li>
+    <li><strong>Verify the company.</strong> Each stock links straight to its financial reports and price history so you can do real research before any decision.</li>
+  </ol>
+  <p class="callout">💡 <strong>New to investing?</strong> Our <a href="/learn/">Beginner's Guide</a> explains everything from "what is a stock?" to reading momentum charts — in plain English. <strong>This is not financial advice</strong> — always do your own research or consult a licensed financial adviser.</p>
+</section>
+
+{{ mm.adslot('2222222222') }}
+
+<section class="wrap" id="learn" aria-labelledby="learn-h">
+  <h2 id="learn-h">📚 Learn momentum investing</h2>
+  <div class="agrid">
+    {% for a in articles %}
+    <a class="acard" href="/learn/{{ a.slug }}/">
+      <span class="acat">{{ a.category }}</span>
+      <h3>{{ a.title }}</h3>
+      <p>{{ a.summary }}</p>
+      <span class="amin">⏱ {{ a.minutes }} min read →</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="wrap" id="faq-teaser" aria-labelledby="faq-h">
+  <h2 id="faq-h">❓ Quick answers</h2>
+  <div class="faq">
+    {% for q in faq[:5] %}
+    <details {% if loop.first %}open{% endif %}><summary>{{ q.q }}</summary><div class="faq-a">{{ q.a|safe }}</div></details>
+    {% endfor %}
+  </div>
+  <p><a class="btn btn-s" href="/faq/">All {{ faq|length }} questions →</a></p>
+</section>
+
+{% endblock %}

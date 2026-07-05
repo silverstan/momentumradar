@@ -1,0 +1,20 @@
+{% extends "base.j2" %}
+{% block title %}FAQ — Stock Market Questions Beginners Ask Most | MomentumRadar{% endblock %}
+{% block desc %}Clear answers to the questions beginner investors ask most: what stocks are, how markets work, what momentum means, how risky it is, and how to start.{% endblock %}
+{% block head %}
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{% for q in faq %}{"@type":"Question","name":{{ q.q|tojson }},"acceptedAnswer":{"@type":"Answer","text":{{ q.a|striptags|tojson }}}}{{ "," if not loop.last }}{% endfor %}]}</script>
+{% endblock %}
+{% block content %}
+<section class="wrap mhead">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> › <span>FAQ</span></nav>
+  <h1>❓ Frequently Asked Questions</h1>
+  <p class="lede">The {{ faq|length }} questions beginners ask most — answered clearly.</p>
+</section>
+<section class="wrap">
+  <div class="faq">
+    {% for q in faq %}
+    <details {% if loop.first %}open{% endif %}><summary>{{ q.q }}</summary><div class="faq-a">{{ q.a|safe }}</div></details>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

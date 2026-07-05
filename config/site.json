@@ -1,0 +1,13 @@
+{
+  "site_name": "MomentumRadar",
+  "base_url": "https://momentumradar.net",
+  "tagline": "Global Stock Momentum Tracker for Beginners",
+  "contact_email": "hello@momentumradar.net",
+  "description": "MomentumRadar tracks stock momentum across 13 global markets — US, Europe, Asia-Pacific and ASEAN. Real daily data, a transparent 0–100 Momentum Score, 90-day momentum history and beginner-friendly analysis. Free, no account needed.",
+  "adsense_client": "",
+  "adsense_note": "Set adsense_client to your AdSense publisher ID, e.g. ca-pub-1234567890123456, after your site is approved. Leave empty to render no ad code.",
+  "score_weights": {"d1": 0.10, "w1": 0.20, "m1": 0.30, "q1": 0.25, "y1": 0.15},
+  "score_scales": {"d1": 3.0, "w1": 6.0, "m1": 12.0, "q1": 25.0, "y1": 60.0},
+  "history_days": 90,
+  "copyright_from": 2024
+}

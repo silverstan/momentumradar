@@ -1,0 +1,23 @@
+{% extends "base.j2" %}
+{% block title %}Beginner's Guide to Momentum Investing — Free Plain-English Lessons | MomentumRadar{% endblock %}
+{% block desc %}Free plain-English guides to momentum investing for complete beginners: what momentum is, how to read 1D/1W/1M/3M/1Y stock data, how the 0–100 Momentum Score works, world markets explained, and risk management basics.{% endblock %}
+{% block content %}
+<section class="wrap mhead">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> › <span>Learn</span></nav>
+  <h1>📚 Beginner's Guide to Momentum Investing</h1>
+  <p class="lede">Start here if you're new. Plain English, no jargon, no sales pitch — just how markets and momentum actually work.</p>
+</section>
+<section class="wrap">
+  <div class="agrid">
+    {% for a in articles %}
+    <a class="acard" href="/learn/{{ a.slug }}/">
+      <span class="acat">{{ a.category }}</span>
+      <h3>{{ a.title }}</h3>
+      <p>{{ a.summary }}</p>
+      <span class="amin">⏱ {{ a.minutes }} min read →</span>
+    </a>
+    {% endfor %}
+  </div>
+  <p class="callout">Also useful: the <a href="/glossary/">35-term Glossary</a> and the <a href="/faq/">FAQ</a>. Nothing here is financial advice — see our <a href="/disclaimer/">Disclaimer</a>.</p>
+</section>
+{% endblock %}
