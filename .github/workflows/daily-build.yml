@@ -43,6 +43,18 @@ jobs:
           git commit -m "data: daily refresh $(date -u +%F)" || echo "no changes"
           git push || true
 
+      - name: Deploy to Hostinger via FTP
+        # Requires repo secrets: FTP_SERVER, FTP_USERNAME, FTP_PASSWORD
+        # (create in hPanel -> Files -> FTP Accounts). Deploys site/ -> public_html/.
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        continue-on-error: true
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: site/
+          server-dir: public_html/
+
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
